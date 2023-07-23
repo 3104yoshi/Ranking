@@ -5,6 +5,9 @@ from flask_login import LoginManager, login_required, login_user
 
 from flask_login import UserMixin
 
+from db.accessor.userCredentialAccessor import userCredentialAccessor
+from db.data.userCredential import userCredential
+
 class User(UserMixin):
     def __init__(self, id):
         self.id = id
@@ -28,18 +31,17 @@ def login():
     
     username = request.form.get('username')
     password = request.form.get('password')
-
-    with sqlite3.connect('app.db') as connection:
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM User WHERE UserName=? and PassWord=? ', (username, password))
-        is_authentificated = True if len(cursor.fetchall()) == 1 else False
+    
+    credential = userCredential(username, password)
+    fetchedUser = userCredentialAccessor.getUser(credential)
+    is_authentificated = True if len(fetchedUser) == 1 else False
 
     if is_authentificated:
         user = User(username)
         login_user(user)
         return redirect(url_for('top'))
 
-    return render_template('login.html')
+    return render_template('login.html', canLogin="id またはパスワードが違います")
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -50,7 +52,13 @@ def signup():
         cursor = connection.cursor()
         cursor.execute('INSERT INTO User VALUES(?, ?, ?)', (request.form.get('username'), request.form.get('password'), datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
 
-    return redirect(url_for('login'))
+    return redirect(url_for('canSignup', canSignup=True))
+
+@app.route('/canSignup/<canSignup>/', methods=['GET', 'POST'])
+def canSignup(canSignup):
+    if canSignup:
+        return render_template('canSignup.html', msg="登録が完了しました。")
+    return render_template('canSignup.html', msg="入力された ユーザー名 は既に使われています")
 
 @app.route('/top', methods=['GET', 'POST'])
 @login_required

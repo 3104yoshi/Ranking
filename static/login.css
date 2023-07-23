@@ -51,4 +51,10 @@ body {
   #signup {
     background-color: #f59dfd;
   }
+
+  .canLogin {
+    color: crimson;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
   
