@@ -1,4 +1,5 @@
 import datetime
+import os
 import sqlite3
 from flask import Flask, app, render_template, request, redirect, url_for
 from flask_login import LoginManager, login_required, login_user
@@ -14,7 +15,8 @@ class User(UserMixin):
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')
+print(app.config['SECRET_KEY'])
 
 login_manager = LoginManager()
 login_manager.init_app(app)
