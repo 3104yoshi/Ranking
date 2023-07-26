@@ -49,9 +49,11 @@ def signup():
     if request.method == 'GET':
         return render_template('signup.html')
     
-    with sqlite3.connect('app.db') as connection:
-        cursor = connection.cursor()
-        cursor.execute('INSERT INTO User VALUES(?, ?, ?)', (request.form.get('username'), request.form.get('password'), datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    credential = userCredential(username, password)
+    userCredentialAccessor.addUser(credential)
 
     return redirect(url_for('canSignup', canSignup=True))
 
