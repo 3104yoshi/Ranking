@@ -1,4 +1,5 @@
 import datetime
+from distutils.util import strtobool
 import os
 import sqlite3
 from flask import Flask, app, render_template, request, redirect, url_for
@@ -53,13 +54,17 @@ def signup():
     password = request.form.get('password')
 
     credential = userCredential(username, password)
+    fetchedUser = userCredentialAccessor.checkUserIs(credential)
+    if len(fetchedUser) == 1:
+        return redirect(url_for('canSignup', canSignup=False))
+
     userCredentialAccessor.addUser(credential)
 
     return redirect(url_for('canSignup', canSignup=True))
 
 @app.route('/canSignup/<canSignup>/', methods=['GET', 'POST'])
 def canSignup(canSignup):
-    if canSignup:
+    if strtobool(canSignup):
         return render_template('canSignup.html', msg="登録が完了しました。")
     return render_template('canSignup.html', msg="入力された ユーザー名 は既に使われています")
 
