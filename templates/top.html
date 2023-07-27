@@ -2,8 +2,34 @@
 <html>
 <head>
   <title>Top Page</title>
-</head>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"
+    integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg=="
+    crossorigin="anonymous"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@next/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  </head>
 <body>
-  <h1>Welcom</h1>
+  <div class="container">
+    <canvas id="mychart"></canvas>
+    <form method="POST" action="/logout">
+      <input type="submit" value="logout" id="logout">
+    </form>
+  </div>
+  <script>
+    var ctx = document.getElementById('mychart');
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['新宿', '渋谷', '池袋', '横浜', '北千住'],
+        datasets: [{
+          label: '乗降客数',
+          data: [2424026, 2284302, 1926362, 1788377, 1195901],
+          backgroundColor: '#f88'
+        }],
+      },
+    });
+    </script>
 </body>
 </html>
